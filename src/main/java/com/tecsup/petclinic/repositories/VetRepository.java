@@ -1,0 +1,17 @@
+package com.tecsup.petclinic.repositories;
+
+import com.tecsup.petclinic.entities.Vet;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface VetRepository extends JpaRepository<Vet, Integer> {
+
+	// Veterinarios activos o inactivos
+	List<Vet> findByActive(Boolean active);
+
+	List<Vet> findByLastName(String lastName);
+
+}
