@@ -34,7 +34,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo '🧪 Testing...'
+                echo '🧪 Testing (pruebas unitarias y de integracion)...'
                 script {
                     if (isUnix()) { sh 'mvn test' } else { bat 'mvn test' }
                 }
