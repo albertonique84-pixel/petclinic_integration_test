@@ -8,6 +8,12 @@ pipeline {
         // git 'Git'
     }
 
+    triggers {
+        // Jenkins corre en local (no en AWS): GitHub no puede llamar al webhook,
+        // por eso Jenkins revisa el repositorio cada minuto y se dispara con cada push.
+        pollSCM('* * * * *')
+    }
+
     stages {
 
         stage('Checkout') {
@@ -20,21 +26,32 @@ pipeline {
         stage('Build') {
             steps {
                 echo '🔨 Building...'
-                sh 'mvn clean compile'
+                script {
+                    if (isUnix()) { sh 'mvn clean compile' } else { bat 'mvn clean compile' }
+                }
             }
         }
 
         stage('Test') {
             steps {
                 echo '🧪 Testing...'
-                sh 'mvn test'
+                script {
+                    if (isUnix()) { sh 'mvn test' } else { bat 'mvn test' }
+                }
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
             }
         }
 
         stage('Package') {
             steps {
                 echo '📦 Creating JAR...'
-                sh 'mvn package -DskipTests'
+                script {
+                    if (isUnix()) { sh 'mvn package -DskipTests' } else { bat 'mvn package -DskipTests' }
+                }
             }
         }
     }
